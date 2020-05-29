@@ -3,14 +3,15 @@ import numpy as np
 from scipy.spatial import distance
 from PIL import Image, ImageDraw
 
-seed = np.random.randint(0, 100)
+
 max_color = (246, 203, 29)
 min_color = (255, 85, 0)
 
 
-def generate_fire(n: int, width: int, scale: int)->None:
+def generate_fire(n: int, width: int, scale: int, seed: int)->None:
     """
     Genera un png a partir de perlin noise en 3D
+    :param seed: semilla de inicialización
     :param n: numero de secuencia
     :param width: ancho y alto de la imagen
     :param scale: es
@@ -19,21 +20,20 @@ def generate_fire(n: int, width: int, scale: int)->None:
     print("Imagen ", n)
     fire = np.zeros((width, width))
     reference_point = (width - 1, int((width - 1) - (width - 1) / 2.0))
-    k = n / 100
+    k = n/(13)
     for i in range(width):
         for j in range(width):
-            perlin_one = noise.pnoise3((i / scale), j / scale + n / 100, n / 100, octaves=8, persistence=0.5,
+            perlin_one = noise.pnoise3((i / scale), j / scale, k, octaves=8, persistence=0.5,
                                        lacunarity=1.0, repeatx=1024, repeaty=1024,
                                        base=seed)
-            perlin_two = noise.pnoise3(i / (scale / 2), j / (scale / 2) - n / 100, n / 10, octaves=8, persistence=0.4,
+            perlin_two = noise.pnoise3(i / (scale / 2), j / (scale / 2) , k, octaves=8, persistence=0.4,
                                        lacunarity=2.0, repeatx=1024, repeaty=1024,
                                        base=seed)
-            perlin_three = noise.pnoise3((i + 60 / scale), j - 20 / scale + n / 100, n / 100, octaves=8, persistence=1,
+            perlin_three = noise.pnoise3((i + 60 / scale), j - 20 / scale , k, octaves=8, persistence=1,
                                          lacunarity=0.5, repeatx=1024, repeaty=1024,
                                          base=seed)
-            fire[i][j] = (perlin_one * 0.5) + (perlin_two * 0.5) + perlin_three - distance.euclidean((i + 40, j),
-                                                                                                     reference_point) / (
-                                 scale * 10)
+            fire[i][j] = (perlin_one * 0.5) + (perlin_two * 0.5) + perlin_three - distance.euclidean((i + 20, j),
+                                                                reference_point) / (scale * 10)
     img = generate_output(fire)
     img.save("./outputs/" + str(n) + ".png")
 
