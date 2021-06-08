@@ -1,4 +1,4 @@
-Pillow==6.2.2
+Pillow==8.2.0
 noise==1.2.2
 numpy==1.18.4
 scipy==1.4.1
